@@ -1,0 +1,15 @@
+version: '2'
+services:
+    redis-ruby:
+        image: ruby:2.4-alpine3.6
+        volumes:
+          - ".:/root"
+        command:
+          - /bin/sh
+          - -c
+          - |
+              cd /root
+              bundle install
+              ruby sub.rb
+    db:
+        image: redis:4-alpine
