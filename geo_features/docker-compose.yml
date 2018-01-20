@@ -1,0 +1,14 @@
+version: '2'
+services:
+    redis-ruby:
+        image: ruby:2.4-alpine3.6
+        volumes:
+          - ".:/root"
+        command:
+          - /bin/sh
+          - -c
+          - |
+              cd /root
+              source run.sh
+    db:
+        image: redis:4-alpine
