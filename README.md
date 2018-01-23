@@ -89,3 +89,43 @@ Reading messages... (press Ctrl-C to quit)
 ```
 
 ## Redis Cluster
+
+[Testing with a Dockerfile for Redis Cluster](https://github.com/Grokzen/docker-redis-cluster/tree/redis-4.0)
+
+Redis enables data sharing between nodes and automatic failure management. A node is a Redis server instance that uses two ports: a classic communication port to be able to exchange with a Redis client and a specific port (cluster bus port) that manages communication between nodes. The latter is obtained by adding 10,000 to the port of the node. (port redis: 7000, cluster bus: 17000). A cluster contains 16384 hashs distributed over the different nodes used. (`HASH_SLOT = CRC16(key) mod 16384`)
+
+```
++----------------------------------+
+|           CLUSTER BUS            |
++----------------------------------+
++--------+   +--------+   +--------+
+| master |   | master |   | master |
+|  1     |   |    4   |   |   6    |
+|      2 |   |   2    |   | 8      |
+|  5     |   |      9 |   |      7 |
++--------+   +--------+   +--------+
+
++--------+   +--------+   +--------+
+| slave  |   | slave  |   | slave  |
+|   1    |   |   9    |   | 8      |
+|     2  |   |    2   |   |     6  |
+|  5     |   |   4    |   |   7    |
++--------+   +--------+   +--------+
+
++--------+   +--------+   +--------+
+| slave  |   | slave  |   | slave  |
+|   2 5  |   |    4   |   |  8  6  |
+|        |   |  3   9 |   |  7     |
+|     1  |   |        |   |        |
++--------+   +--------+   +--------+
+```
+
+The principle of the slave is to replicate the master data. The Redis cluster will then automatically manage the failures of a master node, after which one of the slaves will become the master node. In this case, no data is lost and the service remains available.
+
+The interest of this feature is to create a certain availability of our system by creating replicates of our masters.
+
+## Conclusion
+
+Redis is a very good NoSQL key-value database tool with advanced features. In practical terms, this kind of database can be used to save user preferences, statistics, scores in a game or even to create a messaging system. However, there are limits to this kind of database, here we are in the NoSQL world, where relationships do not exist, so it is very difficult to develop an administration system with redis. The notions of user and permissions do not also exist...
+
+Before to save everything into a single relational database, it may be interesting to have different databases depending on the cases!
